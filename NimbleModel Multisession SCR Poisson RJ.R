@@ -7,8 +7,8 @@ NimModel <- nimbleCode({
   sigma ~ dunif(0,100)
   #--------------------------------------------------------------
   for(g in 1:N.session){
-    lambda[g] <- D*area[g]
-    N[g] ~ dpois(lambda[g])
+    lambda[g] <- D*area[g] #expected N
+    N[g] ~ dpois(lambda[g]) #realized N
     for(i in 1:M[g]) {
       s[g,i,1] ~ dunif(xlim[g,1],xlim[g,2])
       s[g,i,2] ~ dunif(ylim[g,1],ylim[g,2])
