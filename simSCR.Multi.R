@@ -16,8 +16,11 @@ get.area = function (X, buff){
 simSCR.Multi<-
   function(N.session=3,N=NA,lam0=NA,sigma=NA,theta=NA,K=NA,X=NA,buff=3,obstype="poisson"){
     data=vector("list",N.session)
+    if(obstype=="poisson"){
+      theta=rep(NA,N.session)
+    }
     for(g in 1:N.session){
-      data[[g]]=simSCR(N=N[g],lam0=lam0[g],sigma=sigma[g],
+      data[[g]]=simSCR(N=N[g],lam0=lam0[g],sigma=sigma[g],theta=theta[g],
                        K=K[g],X=X[[g]],buff=buff[g],obstype=obstype)
     }
     return(data)

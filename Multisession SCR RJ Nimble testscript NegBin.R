@@ -3,8 +3,8 @@ library(coda)
 source("simSCR.Multi.R")
 source("simSCR.R")
 source("init.SCR.Multi.R")
-source("NimbleModel Multisession SCR Poisson RJ.R")
-source("NimbleFunctions Multisession SCR Poisson.R")
+source("NimbleModel Multisession SCR NegBin RJ.R")
+source("NimbleFunctions Multisession SCR NegBin.R")
 source("sSampler Multi.R")
 
 #make sure to run this line!
@@ -16,6 +16,7 @@ N.session=3
 lambda=50 #expected N
 lam0=rep(0.25,N.session)
 sigma=rep(0.5,N.session)
+theta=rep(0.05,N.session)
 K=c(5,6,7)
 buff=rep(3,N.session) #state space buffer. Should be at least 3 sigma.
 X=vector("list",N.session) #one trapping array per session
@@ -27,7 +28,7 @@ X[[3]]=as.matrix(expand.grid(3:9,3:9)+2)
 area=get.area(X,buff)
 area
 
-obstype="poisson"
+obstype="negbin"
 
 #Simulate some data
 D=0.4
@@ -37,7 +38,8 @@ lambda
 N=rpois(N.session,lambda)#realized N
 N
 
-data=simSCR.Multi(N.session=N.session,N=N,lam0=lam0,sigma=sigma,K=K,X=X,buff=buff,obstype=obstype)
+data=simSCR.Multi(N.session=N.session,N=N,lam0=lam0,sigma=sigma,theta=theta,
+                  K=K,X=X,buff=buff,obstype=obstype)
 
 #Data augmentation level for each session
 M=c(125,115,105)
@@ -60,7 +62,7 @@ constants<-list(N.session=N.session,M=M,J=nimbuild$J,K1D=nimbuild$K1D,xlim=nimbu
 Nimdata<-list(y=nimbuild$y,z=z.data,X=nimbuild$X)
 
 # set parameters to monitor
-parameters<-c('lambda','lam0','sigma','N','D')
+parameters<-c('lambda','lam0','sigma','theta','N','D')
 
 nt=1 #thinning rate
 
@@ -78,14 +80,16 @@ for(g in 1:N.session){
   #nodes used for update, calcNodes + z nodes
   y.nodes <- Rmodel$expandNodeNames(paste("y[",g,",","1:",M[g],",1:",J[g],"]"))
   lam.nodes <- Rmodel$expandNodeNames(paste("lam[",g,",","1:",M[g],",1:",J[g],"]"))
+  p.nodes <- Rmodel$expandNodeNames(paste("p[",g,",","1:",M[g],",1:",J[g],"]"))
   N.node <- Rmodel$expandNodeNames(paste("N[",g,"]"))
   z.nodes <- Rmodel$expandNodeNames(paste("z[",g,",","1:",M[g],"]"))
-  calcNodes <- c(N.node,y.nodes,lam.nodes)
+  calcNodes <- c(N.node,y.nodes,lam.nodes,p.nodes)
   
   conf$addSampler(target = c("N"),
                   type = 'zSampler',control = list(inds.detected=1:nimbuild$n[g],z.ups=z.ups[g],J=J[g],M=M[g],
                                                    xlim=nimbuild$xlim[g,],ylim=nimbuild$ylim[g,],g=g,
-                                                   y.nodes=y.nodes,lam.nodes=lam.nodes,N.node=N.node,z.nodes=z.nodes,
+                                                   y.nodes=y.nodes,lam.nodes=lam.nodes,p.nodes=p.nodes,
+                                                   N.node=N.node,z.nodes=z.nodes,
                                                    calcNodes=calcNodes),
                   silent = TRUE)
 }
@@ -113,7 +117,7 @@ Cmcmc <- compileNimble(Rmcmc, project = Rmodel)
 
 # Run the model.
 start.time2<-Sys.time()
-Cmcmc$run(2500,reset=FALSE) #short run for demonstration. can keep running this line to get more samples
+Cmcmc$run(5000,reset=FALSE) #short run for demonstration. can keep running this line to get more samples
 end.time<-Sys.time()
 end.time-start.time  # total time for compilation, replacing samplers, and fitting
 end.time-start.time2 # post-compilation run time
