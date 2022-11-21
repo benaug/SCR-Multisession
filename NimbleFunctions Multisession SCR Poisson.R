@@ -69,7 +69,7 @@ zSampler <- nimbleFunction(
           reject=TRUE #if so, we reject (could never select these inds, but then need to account for asymmetric proposal)
         }
         if(!reject){
-          
+
           #get initial logprobs for N and y
           lp.initial.N <- model$getLogProb(N.node)
           lp.initial.y <- model$getLogProb(y.nodes[pick])
