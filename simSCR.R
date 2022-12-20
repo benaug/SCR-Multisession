@@ -8,7 +8,7 @@ simSCR<-
     # simulate a population of activity centers
     xlim=range(X[,1])+c(-buff,buff)
     ylim=range(X[,2])+c(-buff,buff)
-    s<- cbind(runif(N, xlim[1],xlim[2]), runif(N,xlim[1],xlim[2]))
+    s<- cbind(runif(N, xlim[1],xlim[2]), runif(N,ylim[1],ylim[2]))
     D<- e2dist(s,X)
     lamd<- lam0*exp(-D*D/(2*sigma*sigma))
     J<- nrow(X)

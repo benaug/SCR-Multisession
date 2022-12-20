@@ -7,9 +7,10 @@ source("NimbleModel Multisession SCR NegBin RJ.R")
 source("NimbleFunctions Multisession SCR NegBin.R")
 source("sSampler Multi.R")
 
-#make sure to run this line!
-nimble:::setNimbleOption('MCMCjointlySamplePredictiveBranches', FALSE)
-nimbleOptions('MCMCjointlySamplePredictiveBranches') 
+#If using Nimble version 0.13.1 and you must run this line 
+nimbleOptions(determinePredictiveNodesInModel = FALSE)
+# #If using Nimble before version 0.13.1, run this line instead
+# nimble:::setNimbleOption('MCMCjointlySamplePredictiveBranches', FALSE)
 
 #simulate some data
 N.session=3
@@ -73,7 +74,7 @@ Rmodel <- nimbleModel(code=NimModel, constants=constants, data=Nimdata,check=FAL
 conf <- configureMCMC(Rmodel,monitors=parameters, thin=nt,useConjugacy = TRUE) 
 
 ###*required* sampler replacement
-z.ups=c(25,25,25) # how many z proposals per iteration per session?
+z.ups=round(M*0.25) # how many z proposals per iteration per session?
 J=nimbuild$J
 conf$removeSampler("N")
 for(g in 1:N.session){
