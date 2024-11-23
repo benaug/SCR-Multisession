@@ -64,8 +64,8 @@ zSampler <- nimbleFunction(
   run = function() {
     for(up in 1:z.ups){ #how many updates per iteration?
       #propose to add/subtract 1
-      updown=rbinom(1,1,0.5) #p=0.5 is symmetric. If you change this, must account for asymmetric proposal
-      reject=FALSE #we auto reject if you select a detected individual
+      updown <- rbinom(1,1,0.5) #p=0.5 is symmetric. If you change this, must account for asymmetric proposal
+      reject <- FALSE #we auto reject if you select a detected individual
       if(updown==0){#subtract
         #find all z's currently on
         z.on <- which(model$z[g,1:M]==1)
