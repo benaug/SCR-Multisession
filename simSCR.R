@@ -3,7 +3,7 @@ e2dist <- function (x, y){
   dvec <- sqrt((x[, 1] - y[i, 1])^2 + (x[, 2] - y[i, 2])^2)
   matrix(dvec, nrow = nrow(x), ncol = nrow(y), byrow = F)
 }
-simSCR<-
+simSCR <-
   function(N=120,lam0=0.1,sigma=0.50,theta=NA,K=10,X=X,buff=3,obstype="poisson"){
     # simulate a population of activity centers
     xlim <- range(X[,1])+c(-buff,buff)

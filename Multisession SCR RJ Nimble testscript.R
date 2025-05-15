@@ -107,7 +107,7 @@ for(g in 1:N.session){
 }
 # Build and compile
 Rmcmc <- buildMCMC(conf)
-# runMCMC(Rmcmc,niter=10) #this will run in R, used for debugging
+# runMCMC(Rmcmc,niter=1) #this will run in R, used for debugging
 Cmodel <- compileNimble(Rmodel)
 Cmcmc <- compileNimble(Rmcmc, project = Rmodel)
 
