@@ -3,7 +3,7 @@ library(coda)
 source("simSCR.Multi.R")
 source("simSCR.R")
 source("init.SCR.Multi.R")
-source("NimbleModel Multisession SCR NegBin RJ.R")
+source("NimbleModel Multisession SCR NegBin.R")
 source("NimbleFunctions Multisession SCR NegBin.R")
 source("sSampler Multi.R")
 
